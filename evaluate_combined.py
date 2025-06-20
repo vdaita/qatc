@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import re
 from llmlingua import PromptCompressor
-from cpc.prompt_compressor import PromptCompressorCPC, ModelType, SamplePreprocessor
+from prompt_compressor import PromptCompressorCPC, ModelType, SamplePreprocessor
 import time
 import tiktoken
 from typing import List
