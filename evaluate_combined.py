@@ -37,10 +37,10 @@ client = OpenAI(
 tokenizer = tiktoken.get_encoding("cl100k_base")
 llm_lingua = PromptCompressor(model_name="microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank", use_llmlingua2=True)
 cpc_compressor = PromptCompressorCPC(
-    model_type=ModelType.LLAMA
+    model_type=ModelType.LLAMA,
 )
 
-def split_string(text: str, num_tokens: 2000) -> List[str]:
+def split_string(text: str, num_tokens: int) -> List[str]:
     tokenized = tokenizer.encode(text)
     token_chunks = [tokenized[i:max(i + num_tokens, len(tokenized))] for i in range(0, len(tokenized), num_tokens)]
     string_chunks = [tokenizer.decode(token_chunk) for token_chunk in token_chunks]
@@ -71,7 +71,7 @@ def get_model_response(prompt: str) -> str:
 
 def baseline_llmlingua(context: str, question: str, target_token: int) -> str:
     compressed_prompt = llm_lingua.compress_prompt(
-        context_list=[context],
+        [context],
         target_token=target_token,
         force_tokens=["\nPassage:", ".", "?", "\n"]
     )
@@ -131,7 +131,7 @@ def eval_dataset(token_ranges=[1000, 2000, 3000]) -> dict:
                 "strategies": {}
             }
 
-            for strategy_name in strategies:
+            for strategy_name in tqdm(strategies, desc="Strategies", leave=False):
                 strategy_func = strategies[strategy_name]
 
                 start_time = time.time()
